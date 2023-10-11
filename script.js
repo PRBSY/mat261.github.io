@@ -95,7 +95,6 @@ function showQuestion() {
                 userResponses.push(userAnswer);
                 currentQuestionIndex++;
                 showQuestion();
-            nextButton.style.display = "none";
             };
         } else {
             currentQuestionData.choices.forEach((choice) => {
@@ -113,7 +112,7 @@ function showQuestion() {
         }
     } else {
        // Quiz is finished
-       questionElement.textContent = "Quiz completed!";
+       questionElement.innerHTML = "Quiz completed!";
 
        // Calculate and display the score
        const score = calculateScore();
@@ -142,7 +141,7 @@ function reviewAnswers() {
     questionElement.innerHTML = "";
     choicesElement.innerHTML = "";
 
-    for (let i = 0; i < questions.length; i++) {
+    for (let i = 0; i < questions.length + 1; i++) {
         const questionData = questions[i].generateQuestion();
         const userResponse = userResponses[i];
         const correctAnswers = questionData.correct;
@@ -184,4 +183,3 @@ function calculateScore() {
 
 // Start the quiz
 startQuiz();
-
