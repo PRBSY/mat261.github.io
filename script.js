@@ -72,37 +72,66 @@ function startQuiz() {
 }
 
 function showQuestion() {
-    console.log("showQuestion() is called."); // Add this line
-
     const questionElement = document.getElementById("question");
     const choicesElement = document.getElementById("choices");
     const nextButton = document.getElementById("next-button");
 
     if (currentQuestionIndex < questions.length) {
-        // ... (existing code for displaying questions)
+        const currentQuestionData = questions[currentQuestionIndex].generateQuestion();
 
-        nextButton.style.display = "none";
-    } else {
-        // Quiz is finished
-        questionElement.textContent = "Quiz completed!";
-
-        // Calculate and display the score
-        const score = calculateScore();
-        const scoreElement = document.createElement("p");
-        scoreElement.textContent = "Your score: " + score + "/" + questions.length;
-        questionElement.appendChild(scoreElement);
-
-        // Add a button to review answers
-        const reviewButton = document.createElement("button");
-        reviewButton.textContent = "Review Answers";
-        reviewButton.onclick = reviewAnswers;
-        questionElement.appendChild(reviewButton);
-
+        questionElement.textContent = currentQuestionData.question;
         choicesElement.innerHTML = "";
-        nextButton.textContent = "Restart";
-        nextButton.style.display = "block";
-        nextButton.onclick = startQuiz;
-    }
+
+        if (currentQuestionData.input) {
+            const inputElement = document.createElement("input");
+            inputElement.type = "text";
+            inputElement.placeholder = "Type your answer here";
+            choicesElement.appendChild(inputElement);
+
+            nextButton.style.display = "block";
+            nextButton.textContent = "Submit";
+            nextButton.onclick = () => {
+                const userAnswer = inputElement.value.trim().toLowerCase();
+                userResponses.push(userAnswer);
+                currentQuestionIndex++;
+                showQuestion();
+            nextButton.style.display = "none";
+            };
+        } else {
+            currentQuestionData.choices.forEach((choice) => {
+                const choiceButton = document.createElement("button");
+                choiceButton.textContent = choice;
+                choiceButton.addEventListener("click", () => {
+                    userResponses.push(choice);
+                    currentQuestionIndex++;
+                    showQuestion();
+                });
+                choicesElement.appendChild(choiceButton);
+            });
+
+            nextButton.style.display = "none";
+        }
+    } else {
+       // Quiz is finished
+       questionElement.textContent = "Quiz completed!";
+
+       // Calculate and display the score
+       const score = calculateScore();
+       const scoreElement = document.createElement("p");
+       scoreElement.textContent = "Your score: " + score + "/" + questions.length;
+       questionElement.appendChild(scoreElement);
+
+       // Add a button to review answers
+       const reviewButton = document.createElement("button");
+       reviewButton.textContent = "Review Answers";
+       reviewButton.onclick = reviewAnswers;
+       questionElement.appendChild(reviewButton);
+
+       choicesElement.innerHTML = "";
+       nextButton.textContent = "Restart";
+       nextButton.style.display = "block";
+       nextButton.onclick = startQuiz;
+   }
 }
 
 function reviewAnswers() {
@@ -155,3 +184,4 @@ function calculateScore() {
 
 // Start the quiz
 startQuiz();
+
